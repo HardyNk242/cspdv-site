@@ -341,7 +341,44 @@
     });
   }
 
-  function construirePdf(jspdf) {
+  // Le logo est réduit puis gardé en mémoire : on ne le retélécharge et
+  // on ne le recalcule pas à chaque PDF.
+  var logoMemoire = null;
+
+  // Le sceau fait 1218 x 1251. Embarqué tel quel, il produisait un PDF
+  // de 5,9 Mo — impossible à envoyer par WhatsApp depuis Brazzaville.
+  // Réduit à 260 px et aplati sur blanc en JPEG, il pèse quelques
+  // dizaines de kilo-octets et reste net à 20 mm sur la page.
+  var LOGO_PX = 260;
+
+  function chargerLogo() {
+    if (logoMemoire !== null) return Promise.resolve(logoMemoire);
+    return new Promise(function (resoudre) {
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var c = document.createElement("canvas");
+          c.width = LOGO_PX;
+          c.height = Math.round(LOGO_PX * img.height / img.width);
+          var ctx = c.getContext("2d");
+          // Le PNG est transparent : sans fond blanc, le JPEG sortirait noir.
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, c.width, c.height);
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+          logoMemoire = { donnees: c.toDataURL("image/jpeg", 0.92),
+                          ratio: c.height / c.width };
+        } catch (e) {
+          logoMemoire = false;
+        }
+        resoudre(logoMemoire);
+      };
+      // Un logo manquant ne doit pas empêcher d'obtenir son devis.
+      img.onerror = function () { logoMemoire = false; resoudre(false); };
+      img.src = "/images/logo.png";
+    });
+  }
+
+  function construirePdf(jspdf, logo) {
     var r = dernier || calculer();
     var doc = new jspdf.jsPDF({ unit: "mm", format: "a4" });
     var L = 18, l = 174, y = 20;
@@ -349,6 +386,10 @@
     var saut = function (h) {
       if (y + h > 275) { doc.addPage(); y = 22; }
     };
+
+    if (logo && logo.donnees) {
+      doc.addImage(logo.donnees, "JPEG", L, y - 6, 20, 20 * logo.ratio);
+    }
 
     doc.setFont("helvetica", "bold"); doc.setFontSize(15);
     doc.text(D.ecole.nom.toUpperCase(), 105, y, { align: "center" }); y += 6;
@@ -442,8 +483,9 @@
 
   function partager() {
     dire("Préparation du PDF…", true);
-    chargerJsPDF().then(function (jspdf) {
-      var doc = construirePdf(jspdf);
+    Promise.all([chargerJsPDF(), chargerLogo()]).then(function (res) {
+      var jspdf = res[0], logo = res[1];
+      var doc = construirePdf(jspdf, logo);
       var blob = doc.output("blob");
       var fichier = new File([blob], nomFichier(), { type: "application/pdf" });
       if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
@@ -463,8 +505,8 @@
 
   function telecharger() {
     dire("Préparation du PDF…", true);
-    chargerJsPDF().then(function (jspdf) {
-      construirePdf(jspdf).save(nomFichier());
+    Promise.all([chargerJsPDF(), chargerLogo()]).then(function (res) {
+      construirePdf(res[0], res[1]).save(nomFichier());
       dire("PDF enregistré dans vos téléchargements.", true);
     }).catch(function () {
       dire("Le générateur de PDF n'a pas pu être chargé. Vérifiez votre connexion.", false);
