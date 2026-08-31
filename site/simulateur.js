@@ -33,13 +33,22 @@
   if (!D) return;
 
   var $ = function (id) { return document.getElementById(id); };
+
+  // [NE PAS UTILISER toLocaleString ICI]
+  // En français, toLocaleString sépare les milliers par U+202F, une espace
+  // fine insécable. Cette lettre n'existe pas dans l'encodage WinAnsi des
+  // polices standard de jsPDF : le PDF affichait « 125/960 » au lieu de
+  // « 125 960 ». On sépare donc avec une espace ASCII ordinaire, qui
+  // s'affiche correctement à l'écran ET dans le PDF.
+  var separer = function (entier) {
+    return String(entier).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
   var fr = function (n) {
-    return Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ");
+    return separer(Math.round(n));
   };
   var eur = function (n) {
-    return (n / D.taux).toLocaleString("fr-FR", {
-      minimumFractionDigits: 2, maximumFractionDigits: 2
-    });
+    var v = (n / D.taux).toFixed(2).split(".");
+    return separer(v[0]) + "," + v[1];
   };
 
   var SEUIL_FRATRIE = 3;   // à partir de trois enfants
