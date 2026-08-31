@@ -308,16 +308,18 @@ td.vide { color: var(--gris-clair); }
 .bourse p { margin: 0; color: var(--gris); font-size: 0.93rem; font-weight: 300; }
 .bourse-affiche {
   width: 100%;
+  /* height:auto est INDISPENSABLE. Sans lui, l'attribut height="933" du
+     HTML impose une hauteur fixe de 933 px : la boîte devenait
+     353 x 933, et object-fit:cover rognait les affiches sur les côtés —
+     titres et montants coupés. */
+  height: auto;
   margin: 0 0 6px;
   border-radius: 0;
   border: 1px solid var(--bord);
-  /* Les affiches font 700 x 933. En réservant leur place AVANT le
-     chargement, la page ne saute plus pendant que les neuf images
-     arrivent — c'est ce sursaut qui donnait l'impression d'une page
-     vide qu'il fallait recharger. */
+  /* Réserve la place avant le chargement, pour que la page ne saute pas
+     pendant que les douze affiches arrivent. */
   aspect-ratio: 700 / 933;
   background: var(--fond-doux);
-  object-fit: cover;
 }
 
 /* ------------------------------------------------------------- donateurs */
