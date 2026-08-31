@@ -90,7 +90,35 @@ const donneesStructurees = () =>
 // ---------------------------------------------------------------------
 //  Gabarit commun
 // ---------------------------------------------------------------------
-function page({ fichier, titre, description, corps }) {
+// Données livrées au simulateur. Il n'y a AUCUN montant écrit dans
+// simulateur.js : tout part d'ici, donc du même fichier que les tableaux.
+const donneesSimulateur = () =>
+  JSON.stringify({
+    taux: TAUX_EURO,
+    tarifs,
+    annexes: {
+      inscription: annexes.find((a) => a.poste.startsWith("Inscription")).montant,
+      reinscription: annexes.find((a) => a.poste.startsWith("Réinscription")).montant,
+      fetes: annexes.find((a) => a.poste.startsWith("Cotisations")).montant,
+      equipement: annexes.find((a) => a.poste.startsWith("Équipement")).montant,
+      cepe: annexes.find((a) => a.poste.includes("CEPE")).montant,
+      bepc: annexes.find((a) => a.poste.includes("BEPC")).montant,
+      morceaux: annexes.find((a) => a.poste.startsWith("Morceaux")).montant,
+    },
+    // Vide volontairement : les frais informatique ne sont pas facturés
+    // tant que la salle n'existe pas à l'école. Le simulateur lit cette
+    // table, donc il n'en ajoutera aucun.
+    informatique: {},
+    ecole: {
+      nom: ecole.nom,
+      site: ecole.site,
+      adresse: `${adresse.rue}, ${adresse.quartier}, ${adresse.ville}`,
+      telephones: contacts.map((c) => c.numero).join("  /  "),
+      whatsapp: contacts[0].intl, // la Gestionnaire : c'est elle qui inscrit
+    },
+  });
+
+function page({ fichier, titre, description, corps, scripts = "" }) {
   const actif = (p) => (p.fichier === fichier ? ' class="actif" aria-current="page"' : "");
   const canonique = ecole.site + (fichier === "index.html" ? "/" : "/" + fichier);
 
@@ -170,10 +198,115 @@ ${corps}
 </footer>
 
 <script src="/menu.js" defer></script>
+${scripts}
 </body>
 </html>
 `;
 }
+
+// ---------------------------------------------------------------------
+//  Le simulateur : 1 728 combinaisons par enfant, près de trois millions
+//  pour une fratrie de deux. Un tableau ne peut pas les montrer.
+// ---------------------------------------------------------------------
+const simulateur = () => `
+<section class="section" id="simulateur">
+  <div class="conteneur">
+    <h2>Combien cela va-t-il me coûter ?</h2>
+    <div class="barre"></div>
+    <p class="chapeau">Choisissez la classe, le régime et ce que vous incluez : le total se met à jour immédiatement. Vous pouvez ensuite en tirer un pro-forma en PDF, ou l'envoyer par WhatsApp.</p>
+
+    <div class="sim">
+      <div class="sim-formulaire">
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">1</span> L'élève</legend>
+
+          <label class="sim-libelle" for="sim-classe">Classe</label>
+          <select id="sim-classe" class="sim-select"></select>
+
+          <div class="sim-libelle" style="margin-top:20px">Régime</div>
+          <div id="sim-regimes"></div>
+
+          <div class="sim-libelle" style="margin-top:20px">Dossier</div>
+          <label class="sim-choix">
+            <input type="radio" name="dossier" id="sim-ancien" checked>
+            <span class="sim-choix-texte"><strong>Ancien élève</strong><small>Réinscription</small></span>
+          </label>
+          <label class="sim-choix">
+            <input type="radio" name="dossier" id="sim-nouveau">
+            <span class="sim-choix-texte"><strong>Nouvel élève</strong><small>Inscription</small></span>
+          </label>
+        </fieldset>
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">2</span> Ce que vous incluez</legend>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-fetes" checked>
+            <span class="sim-choix-texte"><strong>Cotisations des trois fêtes</strong><small>Noël, fête de l'école, sortie scolaire</small></span>
+          </label>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-equipement" checked>
+            <span class="sim-choix-texte"><strong>Équipement scolaire</strong><small>Tenue, sac à dos, livres, cahiers</small></span>
+          </label>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-morceaux">
+            <span class="sim-choix-texte"><strong>Morceaux choisis</strong><small>Facultatif</small></span>
+          </label>
+          <p class="sim-aide">Les frais d'examen s'ajoutent d'eux-mêmes lorsque la classe les impose : CEPE en CM2, BEPC en 3ème.</p>
+        </fieldset>
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">3</span> La durée</legend>
+          <label class="sim-choix"><input type="radio" name="duree" value="annee" checked><span class="sim-choix-texte"><strong>Année complète</strong><small>8 mensualités, plus le forfait de juin</small></span></label>
+          <label class="sim-choix"><input type="radio" name="duree" value="semestre"><span class="sim-choix-texte"><strong>Demi-année</strong><small>4 mensualités</small></span></label>
+          <label class="sim-choix"><input type="radio" name="duree" value="trimestre"><span class="sim-choix-texte"><strong>Un trimestre</strong><small>3 mensualités</small></span></label>
+          <label class="sim-choix"><input type="radio" name="duree" value="mois"><span class="sim-choix-texte"><strong>Un seul mois</strong><small>1 mensualité</small></span></label>
+
+          <label class="sim-libelle" for="sim-enfants" style="margin-top:20px">Nombre d'enfants</label>
+          <select id="sim-enfants" class="sim-select">
+            ${[1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}">${n} enfant${n > 1 ? "s" : ""}</option>`).join("")}
+          </select>
+        </fieldset>
+      </div>
+
+      <aside class="sim-resultat">
+        <div class="sim-collant">
+          <div class="sim-etiquette">Total estimé</div>
+          <div class="sim-montant" id="sim-total">—</div>
+          <div class="sim-euros">soit <span id="sim-total-eur">—</span></div>
+
+          <table class="sim-table">
+            <tbody id="sim-detail"></tbody>
+            <tfoot>
+              <tr id="sim-ligne-fratrie" style="display:none">
+                <td>Par enfant, multiplié par <span id="sim-nb-enfants">1</span></td>
+                <td class="nombre" id="sim-par-enfant">—</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <p class="sim-aide">Mensualité retenue : <strong id="sim-mensuel">—</strong></p>
+          <p class="sim-aide" id="sim-note-fratrie" style="display:none">
+            <strong>Fratrie :</strong> une réduction familiale existe à l'école ;
+            elle n'est <em>pas</em> appliquée ici. Demandez-la à la Direction.
+          </p>
+
+          <div class="sim-boutons">
+            <button type="button" class="btn" id="sim-pdf">Envoyer le PDF</button>
+            <button type="button" class="btn btn-bleu" id="sim-whatsapp">Envoyer le résumé par WhatsApp</button>
+            <button type="button" class="btn btn-bleu" id="sim-telecharger">Enregistrer le PDF</button>
+          </div>
+          <div class="sim-message" id="sim-message" style="display:none"></div>
+
+          <p class="sim-aide" style="margin-top:18px">
+            Cette estimation n'est pas une facture et n'engage pas l'école.
+            Seule la Direction délivre les pro-forma officielles.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>`;
 
 // ---------------------------------------------------------------------
 //  Briques réutilisées par les pages
@@ -398,8 +531,11 @@ pages.push({
   description:
     "Tarifs du Complexe Scolaire Professeur Dieu-Veille à Brazzaville : mensualités par " +
     "classe de la Garderie à la 3ème, coût d'une année complète et frais annexes.",
+  scripts: `<script>window.DONNEES = ${donneesSimulateur()};</script>
+<script src="/simulateur.js" defer></script>`,
   corps:
     enTete("Les tarifs", "Tous les montants sont en francs CFA, affichés sans exception ni frais caché.") +
+    simulateur() +
     section({
       titre: "Mensualités par classe",
       chapeau:

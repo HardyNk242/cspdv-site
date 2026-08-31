@@ -173,6 +173,104 @@
     <p class="accroche" style="margin-bottom:0">Tous les montants sont en francs CFA, affichés sans exception ni frais caché.</p>
   </div>
 </div>
+<section class="section" id="simulateur">
+  <div class="conteneur">
+    <h2>Combien cela va-t-il me coûter ?</h2>
+    <div class="barre"></div>
+    <p class="chapeau">Choisissez la classe, le régime et ce que vous incluez : le total se met à jour immédiatement. Vous pouvez ensuite en tirer un pro-forma en PDF, ou l'envoyer par WhatsApp.</p>
+
+    <div class="sim">
+      <div class="sim-formulaire">
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">1</span> L'élève</legend>
+
+          <label class="sim-libelle" for="sim-classe">Classe</label>
+          <select id="sim-classe" class="sim-select"></select>
+
+          <div class="sim-libelle" style="margin-top:20px">Régime</div>
+          <div id="sim-regimes"></div>
+
+          <div class="sim-libelle" style="margin-top:20px">Dossier</div>
+          <label class="sim-choix">
+            <input type="radio" name="dossier" id="sim-ancien" checked>
+            <span class="sim-choix-texte"><strong>Ancien élève</strong><small>Réinscription</small></span>
+          </label>
+          <label class="sim-choix">
+            <input type="radio" name="dossier" id="sim-nouveau">
+            <span class="sim-choix-texte"><strong>Nouvel élève</strong><small>Inscription</small></span>
+          </label>
+        </fieldset>
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">2</span> Ce que vous incluez</legend>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-fetes" checked>
+            <span class="sim-choix-texte"><strong>Cotisations des trois fêtes</strong><small>Noël, fête de l'école, sortie scolaire</small></span>
+          </label>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-equipement" checked>
+            <span class="sim-choix-texte"><strong>Équipement scolaire</strong><small>Tenue, sac à dos, livres, cahiers</small></span>
+          </label>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-morceaux">
+            <span class="sim-choix-texte"><strong>Morceaux choisis</strong><small>Facultatif</small></span>
+          </label>
+          <p class="sim-aide">Les frais d'examen s'ajoutent d'eux-mêmes lorsque la classe les impose : CEPE en CM2, BEPC en 3ème.</p>
+        </fieldset>
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">3</span> La durée</legend>
+          <label class="sim-choix"><input type="radio" name="duree" value="annee" checked><span class="sim-choix-texte"><strong>Année complète</strong><small>8 mensualités, plus le forfait de juin</small></span></label>
+          <label class="sim-choix"><input type="radio" name="duree" value="semestre"><span class="sim-choix-texte"><strong>Demi-année</strong><small>4 mensualités</small></span></label>
+          <label class="sim-choix"><input type="radio" name="duree" value="trimestre"><span class="sim-choix-texte"><strong>Un trimestre</strong><small>3 mensualités</small></span></label>
+          <label class="sim-choix"><input type="radio" name="duree" value="mois"><span class="sim-choix-texte"><strong>Un seul mois</strong><small>1 mensualité</small></span></label>
+
+          <label class="sim-libelle" for="sim-enfants" style="margin-top:20px">Nombre d'enfants</label>
+          <select id="sim-enfants" class="sim-select">
+            <option value="1">1 enfant</option><option value="2">2 enfants</option><option value="3">3 enfants</option><option value="4">4 enfants</option><option value="5">5 enfants</option><option value="6">6 enfants</option>
+          </select>
+        </fieldset>
+      </div>
+
+      <aside class="sim-resultat">
+        <div class="sim-collant">
+          <div class="sim-etiquette">Total estimé</div>
+          <div class="sim-montant" id="sim-total">—</div>
+          <div class="sim-euros">soit <span id="sim-total-eur">—</span></div>
+
+          <table class="sim-table">
+            <tbody id="sim-detail"></tbody>
+            <tfoot>
+              <tr id="sim-ligne-fratrie" style="display:none">
+                <td>Par enfant, multiplié par <span id="sim-nb-enfants">1</span></td>
+                <td class="nombre" id="sim-par-enfant">—</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <p class="sim-aide">Mensualité retenue : <strong id="sim-mensuel">—</strong></p>
+          <p class="sim-aide" id="sim-note-fratrie" style="display:none">
+            <strong>Fratrie :</strong> une réduction familiale existe à l'école ;
+            elle n'est <em>pas</em> appliquée ici. Demandez-la à la Direction.
+          </p>
+
+          <div class="sim-boutons">
+            <button type="button" class="btn" id="sim-pdf">Envoyer le PDF</button>
+            <button type="button" class="btn btn-bleu" id="sim-whatsapp">Envoyer le résumé par WhatsApp</button>
+            <button type="button" class="btn btn-bleu" id="sim-telecharger">Enregistrer le PDF</button>
+          </div>
+          <div class="sim-message" id="sim-message" style="display:none"></div>
+
+          <p class="sim-aide" style="margin-top:18px">
+            Cette estimation n'est pas une facture et n'engage pas l'école.
+            Seule la Direction délivre les pro-forma officielles.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
 <section class="section">
   <div class="conteneur">
     <h2>Mensualités par classe</h2><div class="barre"></div>
@@ -368,14 +466,6 @@
           <td class="nombre">16 500 F</td>
           <td class="nombre" style="color:var(--gris)">23,57 €</td>
         </tr><tr>
-          <td><strong>Frais informatique, primaire</strong><div style="color:var(--gris);font-size:.87rem">CE2, CM1, CM2</div></td>
-          <td class="nombre">1 000 F</td>
-          <td class="nombre" style="color:var(--gris)">1,43 €</td>
-        </tr><tr>
-          <td><strong>Frais informatique, collège</strong><div style="color:var(--gris);font-size:.87rem">6ème à 3ème</div></td>
-          <td class="nombre">2 000 F</td>
-          <td class="nombre" style="color:var(--gris)">2,86 €</td>
-        </tr><tr>
           <td><strong>Morceaux choisis</strong></td>
           <td class="nombre">1 500 F</td>
           <td class="nombre" style="color:var(--gris)">2,14 €</td>
@@ -420,5 +510,7 @@
 </footer>
 
 <script src="/menu.js" defer></script>
+<script>window.DONNEES = {"taux":700,"tarifs":[{"classe":"Garderie","cycle":"Préscolaire","base":15000,"td":null,"pt":20000,"juin":3500},{"classe":"P1","cycle":"Préscolaire","base":5995,"td":null,"pt":11995,"juin":3500},{"classe":"P2-P3","cycle":"Préscolaire","base":5995,"td":null,"pt":11995,"juin":3500},{"classe":"CP1","cycle":"Primaire","base":5995,"td":7500,"pt":11995,"juin":3500},{"classe":"CP2","cycle":"Primaire","base":5995,"td":7500,"pt":11995,"juin":3500},{"classe":"CE1","cycle":"Primaire","base":5995,"td":7500,"pt":11995,"juin":3500},{"classe":"CE2","cycle":"Primaire","base":5995,"td":7500,"pt":11995,"juin":3500},{"classe":"CM1","cycle":"Primaire","base":6995,"td":7500,"pt":11995,"juin":3500},{"classe":"CM2","cycle":"Primaire","base":9000,"td":9000,"pt":12000,"juin":9000},{"classe":"6ème","cycle":"Collège","base":7995,"td":null,"pt":null,"juin":5000},{"classe":"5ème","cycle":"Collège","base":7995,"td":null,"pt":null,"juin":5000},{"classe":"4ème","cycle":"Collège","base":7995,"td":null,"pt":null,"juin":5000},{"classe":"3ème","cycle":"Collège","base":13500,"td":13500,"pt":13500,"juin":13500}],"annexes":{"inscription":1500,"reinscription":1000,"fetes":9000,"equipement":16500,"cepe":12000,"bepc":16500,"morceaux":1500},"informatique":{},"ecole":{"nom":"Complexe Scolaire Professeur Dieu-Veille","site":"https://ecole.kongoscience.com","adresse":"6 rue Konda, case Barnier, Sadelmi, Mfilou, Brazzaville","telephones":"06 412 64 21  /  06 719 21 95  /  06 828 90 09","whatsapp":"242064126421"}};</script>
+<script src="/simulateur.js" defer></script>
 </body>
 </html>

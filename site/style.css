@@ -428,3 +428,96 @@ td.vide { color: var(--gris-clair); }
   .encart { padding: 64px 24px; }
   .photo img { height: 220px; }
 }
+
+/* ---------------------------------------------------------- simulateur */
+/* Deux colonnes sur grand écran, une seule sur téléphone. Le résultat
+   colle en haut de l'écran quand on fait défiler le formulaire : sans
+   cela, on choisit à l'aveugle sans voir le total changer. */
+.sim { display: grid; grid-template-columns: 1fr 400px; gap: 40px; align-items: start; }
+
+.sim-bloc { border: none; border-top: 1px solid var(--noir); margin: 0 0 34px; padding: 22px 0 0; }
+.sim-bloc legend {
+  padding: 0 12px 0 0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--gris);
+  display: flex; align-items: center; gap: 10px;
+}
+.sim-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border: 1px solid var(--noir);
+  border-radius: 50%; color: var(--noir); font-size: 0.72rem; letter-spacing: 0;
+}
+
+.sim-libelle {
+  display: block;
+  font-size: 0.72rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--gris); margin-bottom: 10px;
+}
+.sim-select {
+  width: 100%; padding: 14px 14px;
+  border: 1px solid var(--bord); border-radius: 0;
+  background: var(--blanc); color: var(--noir);
+  font-family: inherit; font-size: 1rem; font-weight: 300;
+  -webkit-appearance: none; appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--noir) 50%),
+                    linear-gradient(135deg, var(--noir) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 22px, calc(100% - 14px) 22px;
+  background-size: 6px 6px, 6px 6px; background-repeat: no-repeat;
+}
+.sim-select:focus { outline: 2px solid var(--noir); outline-offset: 1px; }
+
+.sim-choix {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 13px 14px; margin-bottom: 8px;
+  border: 1px solid var(--bord); cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.sim-choix:hover { border-color: var(--gris); }
+.sim-choix:has(input:checked) { border-color: var(--noir); background: var(--fond-doux); }
+.sim-choix input { margin-top: 4px; accent-color: var(--noir); width: 17px; height: 17px; flex: none; }
+.sim-choix-texte { display: block; line-height: 1.35; }
+.sim-choix-texte strong { font-weight: 500; font-size: 0.96rem; }
+.sim-choix-texte small { display: block; color: var(--gris); font-size: 0.82rem; margin-top: 3px; }
+
+.sim-aide { color: var(--gris); font-size: 0.84rem; font-weight: 300; margin: 12px 0 0; }
+
+.sim-resultat { position: relative; }
+.sim-collant { position: sticky; top: 96px; border: 1px solid var(--noir); padding: 28px 24px; }
+.sim-etiquette {
+  font-size: 0.68rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--gris);
+}
+.sim-montant {
+  font-size: clamp(2rem, 4.6vw, 2.8rem); font-weight: 300;
+  letter-spacing: -0.05em; line-height: 1.05; margin-top: 6px;
+}
+.sim-euros { color: var(--gris); font-size: 0.92rem; font-weight: 300; margin-top: 4px; }
+
+.sim-table { width: 100%; min-width: 0; margin-top: 22px; border-collapse: collapse; }
+.sim-table td { padding: 10px 0; border-bottom: 1px solid var(--bord); font-size: 0.88rem; }
+.sim-table td.nombre { text-align: right; white-space: nowrap; }
+.sim-table tfoot td { border-bottom: none; border-top: 1px solid var(--noir); font-weight: 500; }
+.sim-sous { color: var(--gris); font-size: 0.78rem; margin-top: 2px; }
+
+.sim-boutons { display: flex; flex-direction: column; gap: 8px; margin-top: 22px; }
+.sim-boutons .btn { text-align: center; cursor: pointer; font-family: inherit; width: 100%; }
+
+.sim-message {
+  margin-top: 14px; padding: 12px 14px;
+  border-left: 2px solid var(--orange);
+  background: var(--fond-doux);
+  font-size: 0.85rem; color: var(--gris);
+}
+.sim-message.ok { border-left-color: var(--noir); }
+
+@media (max-width: 900px) {
+  .sim { grid-template-columns: 1fr; gap: 28px; }
+  /* Sur téléphone le résultat passe AVANT le formulaire : on voit le
+     total en arrivant, puis on ajuste en dessous. */
+  .sim-resultat { order: -1; }
+  .sim-collant { position: static; }
+}

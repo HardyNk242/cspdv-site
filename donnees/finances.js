@@ -43,8 +43,10 @@ export const annexes = [
     detail: "Tenue 3 500, sac à dos 3 000, livres 5 000, cahiers et divers 5 000" },
   { poste: "Frais d'examen du CEPE", montant: 12000, detail: "Élèves de CM2" },
   { poste: "Frais d'examen du BEPC", montant: 16500, detail: "Élèves de 3ème" },
-  { poste: "Frais informatique, primaire", montant: 1000, detail: "CE2, CM1, CM2" },
-  { poste: "Frais informatique, collège", montant: 2000, detail: "6ème à 3ème" },
+  // Les frais informatique figurent dans constants.ts mais NE SONT PAS
+  // FACTURÉS : la salle n'est pas encore disponible à l'école. Ne pas les
+  // remettre ici sans confirmation de la Direction — ils fausseraient à la
+  // fois les tarifs affichés et le simulateur.
   { poste: "Morceaux choisis", montant: 1500 },
 ];
 
