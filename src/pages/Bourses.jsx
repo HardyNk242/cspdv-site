@@ -41,6 +41,12 @@ export default function Bourses() {
                   src={img("bourses/" + b.image)}
                   alt={"Affiche — " + b.nom}
                   loading="lazy"
+                  // Les quatre dernières affiches ne sont pas encore
+                  // générées. Plutôt qu'une icône d'image cassée, la case
+                  // disparaît : la formule reste lisible sans son visuel.
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
                 />
               )}
               <h3>{b.nom}</h3>

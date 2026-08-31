@@ -53,8 +53,10 @@ export const annexes = [
 //  Montants issus du bootstrap des 100 cas : voir
 //  projet_cspdv/affiche_bourses/bootstrap_cas_de_bourses.md
 // ---------------------------------------------------------------------
-// `image` renvoie à public/images/bourses/. Quatre formules n'ont pas
-// encore d'affiche : elles s'affichent sans visuel, sans casser la page.
+// `image` renvoie à public/images/bourses/. Les quatre dernières affiches
+// — trimestrielle, renforcée, diplômante, petite enfance — sont déclarées
+// mais pas encore générées : la page Bourses masque l'image si le fichier
+// manque, plutôt que d'afficher une icône cassée.
 export const bourses = [
   { nom: "Bourse d'activités",    montant: 9000,   image: "activites.jpg",
     texte: "Les trois fêtes de l'année pour un enfant." },
@@ -65,21 +67,21 @@ export const bourses = [
     texte: "Les frais d'examen : 12 000 F pour le CEPE, 16 500 F pour le BEPC." },
   { nom: "Bourse d'équipement",   montant: 16500,  image: "equipement.jpg",
     texte: "Tenue scolaire, sac à dos, livres, cahiers et fournitures." },
-  { nom: "Bourse trimestrielle",  montant: 17985,
+  { nom: "Bourse trimestrielle",  montant: 17985,  image: "trimestrielle.jpg",
     texte: "Un trimestre de classe à mi-temps." },
   { nom: "Bourse semestrielle",   montant: 30730,  image: "semestrielle.jpg",
     texte: "Une demi-année à mi-temps, frais annexes compris." },
   { nom: "Bourse modérée",        montant: 61460,  image: "moderee.jpg", phare: true,
     texte: "Une année entière à mi-temps sans travaux dirigés, tout compris." },
-  { nom: "Bourse renforcée",      montant: 73500,
+  { nom: "Bourse renforcée",      montant: 73500,  image: "renforcee.jpg",
     texte: "Une année entière à mi-temps avec travaux dirigés." },
   { nom: "Bourse collégienne",    montant: 95460,  image: "collegienne.jpg",
     texte: "Une année au collège, de la 6ème à la 4ème, tout compris." },
   { nom: "Bourse complète",       montant: 125960, image: "complete.jpg", phare: true,
     texte: "Une année à plein temps au primaire, équipement et fêtes compris." },
-  { nom: "Bourse diplômante",     montant: 164500,
+  { nom: "Bourse diplômante",     montant: 164500, image: "diplomante.jpg",
     texte: "Une année de 3ème, frais du BEPC et équipement compris." },
-  { nom: "Bourse petite enfance", montant: 190000,
+  { nom: "Bourse petite enfance", montant: 190000, image: "petite-enfance.jpg",
     texte: "Une année de Garderie à plein temps, tout compris." },
 ];
 

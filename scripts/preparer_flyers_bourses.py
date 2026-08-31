@@ -21,8 +21,8 @@ DST = os.path.join(ICI, "public", "images", "bourses")
 LARGEUR = 700
 QUALITE = 82
 
-# Les fichiers sont nommés par horodatage : l'ordre alphabétique est
-# l'ordre de génération, qui suit l'ordre des prompts.
+# Les dix premières affiches sont nommées par horodatage : leur ordre
+# alphabétique est l'ordre de génération, qui suit l'ordre des prompts.
 SORTIES = [
     "appel",           # 1  Offrez une bourse scolaire
     "complete",        # 2  Une année entière        125 960
@@ -36,6 +36,11 @@ SORTIES = [
     "activites",       # 10 Noël et la fête            9 000
 ]
 
+# Les quatre affiches ajoutées ensuite sont reprises À LEUR NOM, sans
+# dépendre de l'ordre : un horodatage supplémentaire aurait décalé toute
+# la liste ci-dessus et attribué le mauvais montant à chaque affiche.
+NOMMEES = ["diplomante", "renforcee", "petite-enfance", "trimestrielle"]
+
 
 def dossier_source():
     annee = next(d for d in os.listdir(RACINE) if d.startswith("Demarrage"))
@@ -44,27 +49,43 @@ def dossier_source():
     return os.path.join(base, images)
 
 
+def convertir(chemin, sortie):
+    im = Image.open(chemin).convert("RGB")
+    if im.width > LARGEUR:
+        im = im.resize((LARGEUR, round(im.height * LARGEUR / im.width)),
+                       Image.LANCZOS)
+    cible = os.path.join(DST, sortie + ".jpg")
+    im.save(cible, quality=QUALITE, optimize=True, progressive=True)
+    poids = os.path.getsize(cible) / 1024
+    print("%-15s %4dx%-4d %6.0f ko" % (sortie, im.width, im.height, poids))
+    return poids
+
+
 def main():
     src = dossier_source()
     os.makedirs(DST, exist_ok=True)
-    noms = sorted(n for n in os.listdir(src) if n.lower().endswith(".png"))
+    tous = [n for n in os.listdir(src) if n.lower().endswith(".png")]
 
-    if len(noms) != len(SORTIES):
-        print("ATTENTION : %d fichiers trouvés pour %d noms de sortie."
-              % (len(noms), len(SORTIES)))
-        print("Vérifiez la correspondance avant de publier.")
+    # On met de côté les affiches portant déjà leur nom, pour ne pas
+    # décaler la liste ordonnée.
+    par_nom = {os.path.splitext(n)[0].lower(): n for n in tous}
+    horodatees = sorted(n for n in tous
+                        if os.path.splitext(n)[0].lower() not in NOMMEES)
+
+    if len(horodatees) != len(SORTIES):
+        print("ATTENTION : %d affiches horodatées pour %d attendues."
+              % (len(horodatees), len(SORTIES)))
+        print("Vérifiez la correspondance avant de publier.\n")
 
     total = 0
-    for nom, sortie in zip(noms, SORTIES):
-        im = Image.open(os.path.join(src, nom)).convert("RGB")
-        if im.width > LARGEUR:
-            im = im.resize((LARGEUR, round(im.height * LARGEUR / im.width)),
-                           Image.LANCZOS)
-        cible = os.path.join(DST, sortie + ".jpg")
-        im.save(cible, quality=QUALITE, optimize=True, progressive=True)
-        poids = os.path.getsize(cible) / 1024
-        total += poids
-        print("%-14s %4dx%-4d %6.0f ko" % (sortie, im.width, im.height, poids))
+    for nom, sortie in zip(horodatees, SORTIES):
+        total += convertir(os.path.join(src, nom), sortie)
+
+    for sortie in NOMMEES:
+        if sortie in par_nom:
+            total += convertir(os.path.join(src, par_nom[sortie]), sortie)
+        else:
+            print("%-15s %s" % (sortie, "— pas encore générée"))
 
     print("\nTotal : %.0f ko dans %s" % (total, DST))
 
