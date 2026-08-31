@@ -3,7 +3,7 @@
 Site public de l'école — Brazzaville, République du Congo.
 Préscolaire, primaire et collège.
 
-**En ligne :** https://hardynk242.github.io/cspdv-site/
+**En ligne :** https://ecole.kongoscience.org
 
 ---
 
@@ -50,7 +50,7 @@ npm install
 npm run dev
 ```
 
-Le site s'ouvre sur http://localhost:5173/cspdv-site/
+Le site s'ouvre sur http://localhost:5173/
 
 ## Renouveler les images
 
@@ -67,9 +67,12 @@ d'impression pèsent trop lourd pour une consultation depuis Brazzaville.
 
 ## Pièges
 
-- **`base` dans `vite.config.js`** doit valoir le nom du dépôt
-  (`/cspdv-site/`). Si le dépôt est renommé, changer cette ligne, sinon
-  plus aucune image ne s'affiche en ligne.
+- **`base` dans `vite.config.js`** vaut `/` parce que le site est servi sur
+  son propre domaine. Si le domaine était retiré et le site rendu à
+  `hardynk242.github.io/cspdv-site/`, il faudrait y remettre `/cspdv-site/`,
+  sinon plus aucune image ne s'affiche.
+- **`public/CNAME`** contient `ecole.kongoscience.org`. Ne pas le supprimer :
+  c'est lui qui rattache le domaine au dépôt.
 - **Le routeur est un `HashRouter`** : les adresses contiennent un `#`
   (`/#/bourses`). C'est voulu — sans lui, un lien direct vers une page
   renverrait une erreur 404 sur GitHub Pages.
