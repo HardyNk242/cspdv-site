@@ -3,7 +3,7 @@
 Site public de l'école — Brazzaville, République du Congo.
 Préscolaire, primaire et collège.
 
-**En ligne :** https://ecole.kongoscience.org
+**En ligne :** https://ecole.kongoscience.com
 
 ---
 
@@ -71,7 +71,7 @@ d'impression pèsent trop lourd pour une consultation depuis Brazzaville.
   son propre domaine. Si le domaine était retiré et le site rendu à
   `hardynk242.github.io/cspdv-site/`, il faudrait y remettre `/cspdv-site/`,
   sinon plus aucune image ne s'affiche.
-- **`public/CNAME`** contient `ecole.kongoscience.org`. Ne pas le supprimer :
+- **`public/CNAME`** contient `ecole.kongoscience.com`. Ne pas le supprimer :
   c'est lui qui rattache le domaine au dépôt.
 - **Le routeur est un `HashRouter`** : les adresses contiennent un `#`
   (`/#/bourses`). C'est voulu — sans lui, un lien direct vers une page
