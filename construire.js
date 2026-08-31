@@ -232,6 +232,15 @@ const simulateur = () => `
           <label class="sim-choix"><input type="radio" name="duree" value="trimestre"><span class="sim-choix-texte"><strong>Un trimestre</strong><small>3 mensualités</small></span></label>
           <label class="sim-choix"><input type="radio" name="duree" value="mois"><span class="sim-choix-texte"><strong>Un seul mois</strong><small>1 mensualité</small></span></label>
         </fieldset>
+
+        <fieldset class="sim-bloc">
+          <legend><span class="sim-num">3</span> Le paiement</legend>
+          <label class="sim-choix">
+            <input type="checkbox" id="sim-groupe">
+            <span class="sim-choix-texte"><strong>Nous payons pour tous les enfants en une seule fois</strong><small>Condition de la réduction familiale, avec au moins trois enfants inscrits</small></span>
+          </label>
+          <p class="sim-aide">Sans paiement groupé, chaque enfant est au prix plein. C'est le paiement en une fois, pour au moins trois enfants, qui ouvre droit aux 10 %.</p>
+        </fieldset>
       </div>
 
       <aside class="sim-resultat">

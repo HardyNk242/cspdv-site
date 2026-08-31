@@ -582,3 +582,32 @@ td.vide { color: var(--gris-clair); }
   .sim-duo { grid-template-columns: 1fr; }
   .sim-case { flex: 1 1 100%; }
 }
+
+/* ------------------------------------ simulateur : angles arrondis
+   Le reste du site suit Squarespace, donc du carré. Le simulateur est
+   un outil qu'on manipule, pas une page qu'on lit : les angles doux y
+   rendent les zones cliquables plus évidentes et l'ensemble moins
+   sévère. C'est une exception assumée, limitée à cette section. */
+#simulateur .sim-enfant,
+#simulateur .sim-collant,
+#simulateur .sim-bloc-enfant .sim-table { border-radius: 14px; }
+
+#simulateur .sim-select,
+#simulateur .sim-choix,
+#simulateur .sim-case,
+#simulateur .sim-ajouter,
+#simulateur .sim-boutons .btn { border-radius: 10px; }
+
+#simulateur .sim-reduction,
+#simulateur .sim-message { border-radius: 0 10px 10px 0; }
+
+#simulateur .sim-num { border-radius: 50%; }
+
+/* La flèche du menu déroulant doit suivre l'arrondi, sinon elle touche
+   le bord. */
+#simulateur .sim-select {
+  background-position: calc(100% - 22px) 22px, calc(100% - 16px) 22px;
+}
+
+#simulateur .sim-retirer { border-radius: 6px; padding: 2px 6px; }
+#simulateur .sim-collant { padding: 30px 26px; }

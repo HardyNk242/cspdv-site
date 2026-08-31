@@ -4,11 +4,16 @@
    Plusieurs enfants, chacun avec SA classe, SON régime et SES options :
    une famille inscrit rarement deux enfants au même niveau.
 
-   RÉDUCTION FAMILIALE — règle de l'école :
-     · à partir de TROIS enfants inscrits ;
-     · 10 % retirés sur le total de CHAQUE enfant ;
-     · jamais pour un boursier : un enfant déjà soutenu par un donateur
-       n'ouvre pas droit à la réduction et n'entre pas dans le compte.
+   RÉDUCTION FAMILIALE — règle de l'école, trois conditions cumulées :
+     · au moins TROIS enfants inscrits ;
+     · payés EN GROUPE, en une seule fois ;
+     · 10 % retirés sur le total de CHAQUE enfant.
+   Jamais pour un boursier : un enfant déjà soutenu par un donateur n'y
+   ouvre pas droit et n'entre pas dans le compte des trois.
+
+   Le paiement groupé n'est PAS coché par défaut : le prix affiché à
+   l'arrivée est le prix plein, celui qu'on paie effectivement. La
+   réduction est une faveur qu'on demande, pas un acquis.
 
    Les tarifs viennent de window.DONNEES, injecté par construire.js
    depuis donnees/finances.js. Aucun montant n'est écrit ici : un tarif
@@ -215,9 +220,11 @@
     var details = enfants.map(function (en) { return calculerEnfant(en, d); });
 
     // Seuls les NON-boursiers comptent pour déclencher la réduction, et
-    // seuls eux en bénéficient.
+    // seuls eux en bénéficient. Le paiement groupé est la seconde
+    // condition : trois enfants payés séparément restent au prix plein.
     var payants = details.filter(function (x) { return !x.enfant.boursier; });
-    var reductionActive = payants.length >= SEUIL_FRATRIE;
+    var groupe = $("sim-groupe") ? $("sim-groupe").checked : false;
+    var reductionActive = groupe && payants.length >= SEUIL_FRATRIE;
 
     var reduction = 0;
     details.forEach(function (x) {
@@ -230,6 +237,7 @@
     return {
       duree: d, details: details, brut: brut, reduction: reduction,
       total: brut - reduction, reductionActive: reductionActive,
+      groupe: groupe,
       nbPayants: payants.length, nbBoursiers: details.length - payants.length,
     };
   }
@@ -275,9 +283,26 @@
     }
 
     // La note n'apparaît que quand elle sert : dès deux enfants, ou dès
-    // qu'un boursier est coché.
-    $("sim-note-fratrie").style.display =
-      (enfants.length > 1 || r.nbBoursiers > 0) ? "" : "none";
+    // qu'un boursier est coché. Son texte dit ce qui manque encore pour
+    // obtenir la réduction, plutôt que de répéter la règle en bloc.
+    var note = $("sim-note-fratrie");
+    if (enfants.length > 1 || r.nbBoursiers > 0) {
+      note.style.display = "";
+      if (r.reductionActive) {
+        note.innerHTML = "Réduction accordée : <strong>" + r.nbPayants +
+          " enfants payants</strong>, réglés en une seule fois." +
+          (r.nbBoursiers ? " Les boursiers en sont exclus." : "");
+      } else if (r.nbPayants < SEUIL_FRATRIE) {
+        note.innerHTML = "Il faut <strong>au moins trois enfants payants</strong> " +
+          "pour la réduction familiale. Vous en avez " + r.nbPayants + "." +
+          (r.nbBoursiers ? " Les boursiers ne comptent pas." : "");
+      } else {
+        note.innerHTML = "Cochez <strong>« nous payons en une seule fois »</strong> " +
+          "pour obtenir les 10 % : c'est le paiement groupé qui y donne droit.";
+      }
+    } else {
+      note.style.display = "none";
+    }
   }
 
   // ------------------------------------------------------------------
@@ -293,7 +318,7 @@
     l.push("");
     if (r.reduction > 0) {
       l.push("Sous-total : " + fr(r.brut) + " F");
-      l.push("Réduction familiale 10 % : - " + fr(r.reduction) + " F");
+      l.push("Réduction familiale 10 % par enfant (paiement groupé) : - " + fr(r.reduction) + " F");
     }
     l.push("TOTAL : " + fr(r.total) + " F  (" + eur(r.total) + " EUR)");
     l.push("");
@@ -371,7 +396,7 @@
       doc.setFontSize(10);
       doc.text("Sous-total", L, y);
       doc.text(fr(r.brut) + " F", L + l, y, { align: "right" }); y += 6;
-      doc.text("Réduction familiale — 10 % sur chaque enfant", L, y);
+      doc.text("Réduction familiale — 10 % sur chaque enfant, paiement groupé", L, y);
       doc.text("- " + fr(r.reduction) + " F", L + l, y, { align: "right" }); y += 8;
     }
 
@@ -492,6 +517,7 @@
     document.querySelectorAll('input[name="duree"]').forEach(function (el) {
       el.addEventListener("change", afficher);
     });
+    if ($("sim-groupe")) $("sim-groupe").addEventListener("change", afficher);
 
     $("sim-pdf").addEventListener("click", partager);
     $("sim-telecharger").addEventListener("click", telecharger);
