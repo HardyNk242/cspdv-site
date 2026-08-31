@@ -30,9 +30,9 @@ export default function Bourses() {
 
       <Section
         titre="Les douze formules"
-        chapeau="Chaque nom dit ce qu'il couvre. Les deux formules encadrées en bleu sont les plus demandées."
+        chapeau="Chaque nom dit ce qu'il couvre. Les deux formules dont le montant est en orange sont les plus demandées."
       >
-        <div className="grille grille-3">
+        <div className="grille grille-3 bourses-grille">
           {bourses.map((b) => (
             <article className={"bourse" + (b.phare ? " phare" : "")} key={b.nom}>
               {b.image && (
