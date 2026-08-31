@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { Navbar, Footer } from "./composants/Mise";
 import Accueil from "./pages/Accueil";
 import Ecole from "./pages/Ecole";
@@ -10,9 +10,20 @@ import Galerie from "./pages/Galerie";
 import Contact from "./pages/Contact";
 
 // Sans cela, on arrive au milieu de la page suivante après un clic.
+//
+// Deux précautions, apprises d'un vrai défaut : on voyait une page blanche
+// au changement de page, et il fallait recharger.
+//   · useLayoutEffect et non useEffect : le défilement a lieu AVANT le
+//     premier affichage, donc on ne voit jamais la position intermédiaire.
+//   · behavior "instant" : la feuille de style met `scroll-behavior: smooth`
+//     pour les ancres. Sans ce forçage, le navigateur ANIME le retour en
+//     haut — et pendant l'animation on regarde le vide sous une page plus
+//     courte que la précédente. C'était toute l'explication du blanc.
 function RemonterEnHaut() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
   return null;
 }
 

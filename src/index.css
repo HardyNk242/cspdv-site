@@ -35,7 +35,15 @@
 }
 
 * { box-sizing: border-box; }
+
+/* Défilement doux réservé aux ancres internes. Le retour en haut lors
+   d'un changement de page est forcé en "instant" dans App.jsx : animé,
+   il faisait passer par une zone vide. */
 html { scroll-behavior: smooth; }
+
+/* La page occupe au moins la hauteur de l'écran : le pied ne remonte
+   pas au milieu pendant que les images se chargent. */
+main { min-height: 70vh; }
 
 body {
   margin: 0;
@@ -303,6 +311,13 @@ td.vide { color: var(--gris-clair); }
   margin: 0 0 6px;
   border-radius: 0;
   border: 1px solid var(--bord);
+  /* Les affiches font 700 x 933. En réservant leur place AVANT le
+     chargement, la page ne saute plus pendant que les neuf images
+     arrivent — c'est ce sursaut qui donnait l'impression d'une page
+     vide qu'il fallait recharger. */
+  aspect-ratio: 700 / 933;
+  background: var(--fond-doux);
+  object-fit: cover;
 }
 
 /* ------------------------------------------------------------- donateurs */
