@@ -521,3 +521,64 @@ td.vide { color: var(--gris-clair); }
   .sim-resultat { order: -1; }
   .sim-collant { position: static; }
 }
+
+/* ------------------------------------------------- simulateur, enfants */
+.sim-enfant { border: 1px solid var(--bord); padding: 20px; margin-bottom: 14px; }
+.sim-enfant-tete {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.7rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--gris);
+  margin-bottom: 16px;
+}
+.sim-retirer {
+  border: none; background: none; cursor: pointer; padding: 0;
+  font-family: inherit; font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gris); text-decoration: underline;
+}
+.sim-retirer:hover { color: var(--noir); }
+
+.sim-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* Options en pastilles : cinq cases à cocher empilées prendraient tout
+   l'écran d'un téléphone, multiplié par le nombre d'enfants. */
+.sim-cases { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.sim-case {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 9px 12px; border: 1px solid var(--bord);
+  cursor: pointer; flex: 1 1 150px; transition: border-color .12s, background .12s;
+}
+.sim-case.active { border-color: var(--noir); background: var(--fond-doux); }
+.sim-case input { margin-top: 3px; accent-color: var(--noir); width: 15px; height: 15px; flex: none; }
+.sim-case strong { font-weight: 500; font-size: 0.86rem; display: block; }
+.sim-case small { display: block; color: var(--gris); font-size: 0.74rem; margin-top: 2px; }
+
+.sim-ajouter {
+  width: 100%; padding: 14px;
+  border: 1px dashed var(--gris); background: none; cursor: pointer;
+  font-family: inherit; font-size: 0.86rem; font-weight: 500;
+  letter-spacing: 0.02em; color: var(--noir);
+}
+.sim-ajouter:hover { border-color: var(--noir); background: var(--fond-doux); }
+
+.sim-bloc-enfant { margin-top: 20px; }
+.sim-bloc-tete {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.7rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--gris);
+  padding-bottom: 6px; border-bottom: 1px solid var(--noir);
+}
+.sim-bloc-tete span { font-size: 0.95rem; letter-spacing: -0.02em; color: var(--noir); }
+.sim-remise td { color: var(--orange); }
+
+.sim-reduction {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px; margin-top: 18px; padding: 12px 14px;
+  border-left: 2px solid var(--orange); background: var(--fond-doux);
+  font-size: 0.85rem;
+}
+.sim-reduction span { color: var(--orange); font-weight: 500; white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .sim-duo { grid-template-columns: 1fr; }
+  .sim-case { flex: 1 1 100%; }
+}

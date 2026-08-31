@@ -219,53 +219,18 @@ const simulateur = () => `
       <div class="sim-formulaire">
 
         <fieldset class="sim-bloc">
-          <legend><span class="sim-num">1</span> L'élève</legend>
-
-          <label class="sim-libelle" for="sim-classe">Classe</label>
-          <select id="sim-classe" class="sim-select"></select>
-
-          <div class="sim-libelle" style="margin-top:20px">Régime</div>
-          <div id="sim-regimes"></div>
-
-          <div class="sim-libelle" style="margin-top:20px">Dossier</div>
-          <label class="sim-choix">
-            <input type="radio" name="dossier" id="sim-ancien" checked>
-            <span class="sim-choix-texte"><strong>Ancien élève</strong><small>Réinscription</small></span>
-          </label>
-          <label class="sim-choix">
-            <input type="radio" name="dossier" id="sim-nouveau">
-            <span class="sim-choix-texte"><strong>Nouvel élève</strong><small>Inscription</small></span>
-          </label>
+          <legend><span class="sim-num">1</span> Les enfants</legend>
+          <div id="sim-enfants-liste"></div>
+          <button type="button" class="sim-ajouter" id="sim-ajouter">+ Ajouter un enfant</button>
+          <p class="sim-aide">Chaque enfant a sa propre classe, son régime et ses options. Les frais d'examen s'ajoutent d'eux-mêmes : CEPE en CM2, BEPC en 3ème.</p>
         </fieldset>
 
         <fieldset class="sim-bloc">
-          <legend><span class="sim-num">2</span> Ce que vous incluez</legend>
-          <label class="sim-choix">
-            <input type="checkbox" id="sim-fetes" checked>
-            <span class="sim-choix-texte"><strong>Cotisations des trois fêtes</strong><small>Noël, fête de l'école, sortie scolaire</small></span>
-          </label>
-          <label class="sim-choix">
-            <input type="checkbox" id="sim-equipement" checked>
-            <span class="sim-choix-texte"><strong>Équipement scolaire</strong><small>Tenue, sac à dos, livres, cahiers</small></span>
-          </label>
-          <label class="sim-choix">
-            <input type="checkbox" id="sim-morceaux">
-            <span class="sim-choix-texte"><strong>Morceaux choisis</strong><small>Facultatif</small></span>
-          </label>
-          <p class="sim-aide">Les frais d'examen s'ajoutent d'eux-mêmes lorsque la classe les impose : CEPE en CM2, BEPC en 3ème.</p>
-        </fieldset>
-
-        <fieldset class="sim-bloc">
-          <legend><span class="sim-num">3</span> La durée</legend>
+          <legend><span class="sim-num">2</span> La durée</legend>
           <label class="sim-choix"><input type="radio" name="duree" value="annee" checked><span class="sim-choix-texte"><strong>Année complète</strong><small>8 mensualités, plus le forfait de juin</small></span></label>
           <label class="sim-choix"><input type="radio" name="duree" value="semestre"><span class="sim-choix-texte"><strong>Demi-année</strong><small>4 mensualités</small></span></label>
           <label class="sim-choix"><input type="radio" name="duree" value="trimestre"><span class="sim-choix-texte"><strong>Un trimestre</strong><small>3 mensualités</small></span></label>
           <label class="sim-choix"><input type="radio" name="duree" value="mois"><span class="sim-choix-texte"><strong>Un seul mois</strong><small>1 mensualité</small></span></label>
-
-          <label class="sim-libelle" for="sim-enfants" style="margin-top:20px">Nombre d'enfants</label>
-          <select id="sim-enfants" class="sim-select">
-            ${[1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}">${n} enfant${n > 1 ? "s" : ""}</option>`).join("")}
-          </select>
         </fieldset>
       </div>
 
@@ -275,20 +240,17 @@ const simulateur = () => `
           <div class="sim-montant" id="sim-total">—</div>
           <div class="sim-euros">soit <span id="sim-total-eur">—</span></div>
 
-          <table class="sim-table">
-            <tbody id="sim-detail"></tbody>
-            <tfoot>
-              <tr id="sim-ligne-fratrie" style="display:none">
-                <td>Par enfant, multiplié par <span id="sim-nb-enfants">1</span></td>
-                <td class="nombre" id="sim-par-enfant">—</td>
-              </tr>
-            </tfoot>
-          </table>
+          <div id="sim-detail"></div>
 
-          <p class="sim-aide">Mensualité retenue : <strong id="sim-mensuel">—</strong></p>
+          <div class="sim-reduction" id="sim-reduction" style="display:none">
+            <strong>Réduction familiale — 10 % sur chaque enfant</strong>
+            <span id="sim-reduction-montant"></span>
+          </div>
+
           <p class="sim-aide" id="sim-note-fratrie" style="display:none">
-            <strong>Fratrie :</strong> une réduction familiale existe à l'école ;
-            elle n'est <em>pas</em> appliquée ici. Demandez-la à la Direction.
+            La réduction familiale s'applique <strong>à partir de trois enfants
+            inscrits</strong>, et <strong>jamais aux boursiers</strong> : un
+            enfant déjà soutenu par un donateur n'y ouvre pas droit.
           </p>
 
           <div class="sim-boutons">
