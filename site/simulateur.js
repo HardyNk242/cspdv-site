@@ -7,9 +7,10 @@
    RÉDUCTION FAMILIALE — règle de l'école, trois conditions cumulées :
      · au moins TROIS enfants inscrits ;
      · payés EN GROUPE, en une seule fois ;
-     · 10 % retirés sur les MENSUALITÉS DE SCOLARITÉ de chaque enfant,
-       et sur elles seules. Ni l'inscription, ni la réinscription, ni
-       l'équipement, ni les fêtes, ni les frais d'examen ne se remisent.
+     · 10 % retirés sur les MENSUALITÉS de chaque enfant, et sur elles
+       seules. Sont hors assiette : le forfait du mois de juin,
+       l'inscription, la réinscription, l'équipement, les cotisations de
+       fêtes et les frais d'examen.
    Jamais pour un boursier : un enfant déjà soutenu par un donateur n'y
    ouvre pas droit et n'entre pas dans le compte des trois.
 
@@ -190,10 +191,13 @@
     if (mensuel === null || mensuel === 0) mensuel = t.base;
 
     var lignes = [];
-    // `scolarite: true` marque la SEULE ligne sur laquelle porte la
-    // réduction familiale. Équipement, fêtes et frais d'examen sont des
-    // fournitures et des droits : ils ne se remisent pas.
-    var montantScolarite = d.mois * mensuel + (d.juin ? t.juin : 0);
+    // Deux montants distincts, et c'est important :
+    //   · montantScolarite — ce que la famille paie pour la scolarité ;
+    //   · mensualites      — l'ASSIETTE de la réduction familiale.
+    // Le forfait de juin fait partie de la scolarité mais n'ouvre PAS
+    // droit à la remise : seules les mensualités sont remisées.
+    var mensualites = d.mois * mensuel;
+    var montantScolarite = mensualites + (d.juin ? t.juin : 0);
     lignes.push({
       poste: "Scolarité",
       detail: d.mois + " mensualité" + (d.mois > 1 ? "s" : "") + " de " + fr(mensuel) + " F" +
@@ -219,7 +223,8 @@
 
     var brut = lignes.reduce(function (s, l) { return s + l.montant; }, 0);
     return { enfant: en, lignes: lignes, brut: brut, scolarite: montantScolarite,
-             mensuel: mensuel, classe: en.classe, regime: LIBELLE_REGIME[en.regime] };
+             mensualites: mensualites, mensuel: mensuel, classe: en.classe,
+             regime: LIBELLE_REGIME[en.regime] };
   }
 
   function calculer() {
@@ -233,13 +238,16 @@
     var groupe = $("sim-groupe") ? $("sim-groupe").checked : false;
     var reductionActive = groupe && payants.length >= SEUIL_FRATRIE;
 
-    // L'assiette est la SCOLARITÉ SEULE, pas le total. L'inscription,
-    // la réinscription, l'équipement, les fêtes et les frais d'examen
-    // sont des droits et des fournitures : ils ne se remisent pas.
+    // L'assiette, ce sont les MENSUALITÉS SEULES. Le forfait de juin,
+    // l'inscription, la réinscription, l'équipement, les fêtes et les
+    // frais d'examen restent tous en dehors.
     var reduction = 0;
     details.forEach(function (x) {
+      // Arrondi au franc DÈS LE CALCUL. Sans cela, un trimestre donne
+      // 3 598,5 F de remise : les lignes affichées s'arrondissaient
+      // chacune de leur côté et ne faisaient plus la somme du total.
       x.reduction = (reductionActive && !x.enfant.boursier)
-        ? x.scolarite * TAUX_REDUCTION : 0;
+        ? Math.round(x.mensualites * TAUX_REDUCTION) : 0;
       x.net = x.brut - x.reduction;
       reduction += x.reduction;
     });
@@ -273,7 +281,7 @@
             '</td><td class="nombre">' + fr(l.montant) + " F</td></tr>";
         }).join("") +
         (x.reduction
-          ? '<tr class="sim-remise"><td>Réduction familiale, 10 % de la scolarité</td><td class="nombre">− ' +
+          ? '<tr class="sim-remise"><td>Réduction familiale, 10 % des mensualités</td><td class="nombre">− ' +
             fr(x.reduction) + " F</td></tr>"
           : "") +
         (x.enfant.boursier
@@ -329,7 +337,7 @@
     l.push("");
     if (r.reduction > 0) {
       l.push("Sous-total : " + fr(r.brut) + " F");
-      l.push("Reduction familiale 10 % de la scolarite, par enfant : - " + fr(r.reduction) + " F");
+      l.push("Reduction familiale 10 % des mensualites, par enfant : - " + fr(r.reduction) + " F");
     }
     l.push("TOTAL : " + fr(r.total) + " F  (" + eur(r.total) + " EUR)");
     l.push("");
@@ -436,7 +444,7 @@
       });
       if (x.reduction) {
         saut(6);
-        doc.text("Réduction familiale, 10 % de la scolarité", L + 4, y);
+        doc.text("Réduction familiale, 10 % des mensualités", L + 4, y);
         doc.text("- " + fr(x.reduction) + " F", L + l, y, { align: "right" });
         y += 5.5;
       }
@@ -448,7 +456,7 @@
       doc.setFontSize(10);
       doc.text("Sous-total", L, y);
       doc.text(fr(r.brut) + " F", L + l, y, { align: "right" }); y += 6;
-      doc.text("Réduction familiale — 10 % de la scolarité de chaque enfant", L, y);
+      doc.text("Réduction familiale — 10 % des mensualités de chaque enfant", L, y);
       doc.text("- " + fr(r.reduction) + " F", L + l, y, { align: "right" }); y += 8;
     }
 
@@ -468,9 +476,9 @@
       "en vigueur. Il ne constitue pas une facture et n'engage pas l'école. " +
       "La réduction familiale de 10 % suppose trois conditions réunies : au moins trois " +
       "enfants payants, un règlement en une seule fois, et des enfants non boursiers. " +
-      "Elle porte sur les MENSUALITÉS DE SCOLARITÉ seules : ni l'inscription, ni la " +
-      "réinscription, ni l'équipement, ni les cotisations de fêtes, ni les frais " +
-      "d'examen ne sont remisés. Les montants sont à confirmer auprès de la " +
+      "Elle porte sur les MENSUALITÉS seules : le forfait du mois de juin, " +
+      "l'inscription, la réinscription, l'équipement, les cotisations de fêtes et " +
+      "les frais d'examen restent tous hors assiette. Les montants sont à confirmer auprès de la " +
       "Direction, qui délivre seule les pro-forma officielles. Tout versement donne " +
       "lieu à un reçu numéroté.";
     var avert = doc.splitTextToSize(texte, l);

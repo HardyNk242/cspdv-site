@@ -239,7 +239,7 @@ const simulateur = () => `
             <input type="checkbox" id="sim-groupe">
             <span class="sim-choix-texte"><strong>Nous payons pour tous les enfants en une seule fois</strong><small>Condition de la réduction familiale, avec au moins trois enfants payants</small></span>
           </label>
-          <p class="sim-aide">Sans paiement groupé, chaque enfant est au prix plein. C'est le règlement en une fois, pour au moins trois enfants, qui ouvre droit aux 10 % — et ces 10 % portent sur les <strong>mensualités de scolarité seules</strong> : ni l'inscription, ni la réinscription, ni l'équipement, ni les fêtes, ni les frais d'examen ne sont remisés.</p>
+          <p class="sim-aide">Sans paiement groupé, chaque enfant est au prix plein. C'est le règlement en une fois, pour au moins trois enfants, qui ouvre droit aux 10 % — et ces 10 % portent sur les <strong>mensualités seules</strong> : le forfait du mois de juin, l'inscription, la réinscription, l'équipement, les fêtes et les frais d'examen restent tous hors assiette.</p>
         </fieldset>
       </div>
 
