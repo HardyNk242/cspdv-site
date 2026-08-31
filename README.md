@@ -19,6 +19,18 @@ Préscolaire, primaire et collège.
 | Galerie | Photographies de l'année |
 | Contact | Téléphones et informations pratiques |
 
+## Comment c'est fait
+
+**HTML statique, aucune dépendance.** Un générateur Node d'un seul fichier
+(`construire.js`) lit les données et écrit sept pages HTML dans `site/`.
+Pas de framework, pas de `npm install`, pas de `node_modules`.
+
+Le choix vient d'un constat : en React, les adresses contenaient un `#`,
+et Google ignore tout ce qui suit un `#`. Le site n'avait donc qu'**une
+seule page indexable** au lieu de sept, et son contenu n'apparaissait
+qu'après exécution du JavaScript. En HTML statique, les sept pages
+existent vraiment.
+
 ## Modifier le site
 
 **Tout le contenu est dans deux fichiers.** Aucun texte n'est écrit en dur
@@ -26,8 +38,10 @@ dans les pages.
 
 | Fichier | Ce qu'on y change |
 |---|---|
-| `src/data/ecole.js` | Identité, cycles, résultats aux examens, galerie, donateurs |
-| `src/data/finances.js` | Tarifs par classe, frais annexes, formules de bourse |
+| `donnees/ecole.js` | Identité, adresse, contacts, cycles, résultats, galerie, donateurs |
+| `donnees/finances.js` | Tarifs par classe, frais annexes, formules de bourse |
+
+Après modification : `node construire.js`, puis `git push`.
 
 Les tarifs viennent de `constants.ts` du logiciel de gestion CSPDV.
 **Si un tarif y change, il faut le reporter ici**, sinon le site ment.
@@ -40,17 +54,18 @@ git commit -m "Description du changement"
 git push
 ```
 
-GitHub reconstruit et met en ligne automatiquement, en deux minutes environ.
+GitHub régénère le HTML et met en ligne automatiquement, en une trentaine
+de secondes.
 L'avancement est visible dans l'onglet **Actions** du dépôt.
 
 ## Travailler en local
 
 ```bash
-npm install
-npm run dev
+node construire.js
+python -m http.server 8899 --directory site
 ```
 
-Le site s'ouvre sur http://localhost:5173/
+Le site s'ouvre sur http://localhost:8899/
 
 ## Renouveler les images
 
@@ -73,9 +88,12 @@ d'impression pèsent trop lourd pour une consultation depuis Brazzaville.
   sinon plus aucune image ne s'affiche.
 - **`public/CNAME`** contient `ecole.kongoscience.com`. Ne pas le supprimer :
   c'est lui qui rattache le domaine au dépôt.
-- **Le routeur est un `HashRouter`** : les adresses contiennent un `#`
-  (`/#/bourses`). C'est voulu — sans lui, un lien direct vers une page
-  renverrait une erreur 404 sur GitHub Pages.
+- **`site/` est versionné**, contrairement à l'usage. C'est délibéré :
+  si le générateur cassait, le dernier site produit resterait dans le
+  dépôt et en ligne.
+- **Les anciennes adresses en `#/`** (du temps de React) sont redirigées
+  par `site/menu.js`. Ne pas supprimer ce bloc : des liens ont été
+  partagés sous cette forme.
 
 ## Vie privée
 
@@ -86,4 +104,4 @@ d'impression pèsent trop lourd pour une consultation depuis Brazzaville.
 
 ---
 
-Construit avec React et Vite.
+HTML, CSS et un peu de JavaScript. Généré par `construire.js`.

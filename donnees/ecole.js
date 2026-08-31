@@ -1,18 +1,52 @@
 // =====================================================================
-//  Identité de l'école, résultats, galerie et donateurs.
-//  C'est le seul fichier à modifier pour mettre le site à jour :
-//  aucun de ces textes n'est écrit en dur dans les pages.
+//  Identité de l'école, contacts, résultats, galerie et donateurs.
+//  C'est l'un des deux seuls fichiers à modifier pour mettre le site
+//  à jour. On lance ensuite : node construire.js
 // =====================================================================
 
 export const ecole = {
   nom: "Complexe Scolaire Professeur Dieu-Veille",
   nomCourt: "CSPDV",
+  devise: "Préscolaire · Primaire · Collège",
+  email: "professeurdieuveille@gmail.com",
+  anneeScolaire: "2026-2027",
+  site: "https://ecole.kongoscience.com",
+};
+
+export const adresse = {
+  rue: "6 rue Konda, case Barnier",
+  quartier: "Sadelmi, Mfilou",
   ville: "Brazzaville",
   pays: "République du Congo",
-  devise: "Préscolaire · Primaire · Collège",
-  telephones: ["06 412 64 21", "06 719 21 95", "06 828 90 09"],
-  anneeScolaire: "2026-2027",
+  carte: "https://maps.app.goo.gl/7wPwyZQ5sHwuaL6G6",
 };
+
+// `intl` sert aux liens tel: et WhatsApp. Au Congo-Brazzaville le zéro
+// initial se CONSERVE en format international : +242 06 ... et non +242 6 ...
+// Un lien wa.me sans ce zéro tombe sur un numéro inexistant.
+export const contacts = [
+  {
+    numero: "06 412 64 21",
+    intl: "242064126421",
+    role: "Gestionnaire de l'école",
+    personne: "Madame Goma Nuptia",
+    note: "Inscriptions, paiements et reçus",
+  },
+  {
+    numero: "06 719 21 95",
+    intl: "242067192195",
+    role: "Assistant du Directeur",
+    personne: "Monsieur Chiroll Makenda",
+    note: "Scolarité, vie de l'école",
+  },
+  {
+    numero: "06 828 90 09",
+    intl: "242068289009",
+    role: "Directrice des Affaires Financières",
+    personne: null,
+    note: "Parrainages et suivi des dons",
+  },
+];
 
 export const cycles = [
   {
@@ -38,10 +72,10 @@ export const cycles = [
   },
 ];
 
-// Résultats aux examens d'État. Ne rien ajouter ici avant proclamation.
+// Résultats aux examens d'État. Ne rien ajouter avant proclamation.
 export const resultats = [
   { annee: "2024-2025", cepe: "100 %", bepc: "64 %" },
-  { annee: "2025-2026", cepe: "100 %", bepc: null }, // null = résultats en cours
+  { annee: "2025-2026", cepe: "100 %", bepc: null }, // null = en cours
 ];
 
 export const galerie = [
@@ -57,10 +91,9 @@ export const galerie = [
 ];
 
 // ---------------------------------------------------------------------
-//  DONATEURS
-//  Volontairement SANS montants : on publie qui soutient l'école et
-//  combien d'enfants, pas ce que chacun verse. Le détail chiffré reste
-//  dans la pro-forma nominative envoyée au donateur.
+//  DONATEURS — volontairement SANS montants : on publie qui soutient
+//  l'école et combien d'enfants, jamais ce que chacun verse, jamais le
+//  nom des boursiers.
 // ---------------------------------------------------------------------
 export const donateurs = [
   { nom: "M. Nicy Bazebinzona", eleves: 5, niveaux: "du CP2 au CM2" },

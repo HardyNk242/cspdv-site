@@ -19,7 +19,7 @@ SRC = os.path.join(os.path.dirname(ICI), "Demarrage année scolaire",
                    "projet_cspdv", "affiche_annee", "photos")
 LOGO = os.path.join(os.path.dirname(ICI), "Demarrage année scolaire",
                     "projet_cspdv", "affiche_annee", "logo_sceau.png")
-DST = os.path.join(ICI, "public", "images")
+DST = os.path.join(ICI, "site", "images")
 
 LARGEUR_MAX = 1200
 QUALITE = 80

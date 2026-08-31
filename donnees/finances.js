@@ -3,7 +3,7 @@
 //  Source unique : constants.ts du logiciel de gestion CSPDV.
 //  Si un tarif change là-bas, il doit changer ici — sinon le site ment.
 //
-//  Base de calcul d'une année : 8 mensualités d'octobre à mai,
+//  Base de calcul dune année : 8 mensualités doctobre à mai,
 //  plus le forfait du mois de juin.
 // =====================================================================
 

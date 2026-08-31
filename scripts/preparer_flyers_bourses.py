@@ -16,7 +16,7 @@ from PIL import Image
 
 ICI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RACINE = os.path.dirname(ICI)
-DST = os.path.join(ICI, "public", "images", "bourses")
+DST = os.path.join(ICI, "site", "images", "bourses")
 
 LARGEUR = 700
 QUALITE = 82
@@ -40,6 +40,25 @@ SORTIES = [
 # dépendre de l'ordre : un horodatage supplémentaire aurait décalé toute
 # la liste ci-dessus et attribué le mauvais montant à chaque affiche.
 NOMMEES = ["diplomante", "renforcee", "petite-enfance", "trimestrielle"]
+
+
+def cle(nom_fichier):
+    """Ramène un nom de fichier à sa clé, quelle qu'en soit la forme.
+
+    Les fichiers arrivent tels que le générateur d'images les nomme :
+    « Bourse_trimestrielle.png », « Bourse petite enfance.png », et même
+    « Bourse_renforcee..png » avec deux points. Exiger un nom exact
+    obligerait à renommer à la main à chaque fois — et un oubli
+    attribuerait le mauvais montant à une affiche.
+    """
+    stem = os.path.splitext(nom_fichier)[0].lower()
+    for a, b in (("é", "e"), ("è", "e"), ("ê", "e"), ("à", "a"), ("ô", "o")):
+        stem = stem.replace(a, b)
+    stem = stem.replace("_", "-").replace(" ", "-")
+    stem = stem.strip(".-")                       # « renforcee. » -> « renforcee »
+    if stem.startswith("bourse-"):
+        stem = stem[len("bourse-"):]
+    return stem.strip(".-")
 
 
 def dossier_source():
@@ -68,9 +87,8 @@ def main():
 
     # On met de côté les affiches portant déjà leur nom, pour ne pas
     # décaler la liste ordonnée.
-    par_nom = {os.path.splitext(n)[0].lower(): n for n in tous}
-    horodatees = sorted(n for n in tous
-                        if os.path.splitext(n)[0].lower() not in NOMMEES)
+    par_nom = {cle(n): n for n in tous}
+    horodatees = sorted(n for n in tous if cle(n) not in NOMMEES)
 
     if len(horodatees) != len(SORTIES):
         print("ATTENTION : %d affiches horodatées pour %d attendues."

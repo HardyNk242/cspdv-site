@@ -1,24 +1,11 @@
 {
-  "name": "site_ecole_cspdv",
+  "name": "site-ecole-cspdv",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
+  "description": "Site du Complexe Scolaire Professeur Dieu-Veille — HTML statique, aucune dépendance",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.3"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.1.0",
-    "oxlint": "^1.79.0",
-    "vite": "^8.2.2"
+    "build": "node construire.js",
+    "dev": "node construire.js && python -m http.server 8899 --directory site"
   }
 }

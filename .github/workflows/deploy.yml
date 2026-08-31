@@ -1,19 +1,20 @@
 # Publie le site sur GitHub Pages à chaque envoi sur `main`.
-# Aucune commande à lancer à la main : on modifie, on pousse, c'est en ligne
-# environ deux minutes plus tard.
+#
+# Le site n'a AUCUNE dépendance : pas de npm install, pas de node_modules.
+# Le générateur est un seul fichier Node qui écrit du HTML dans site/.
+# La publication prend une vingtaine de secondes.
 name: Publier le site
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # permet de relancer la publication depuis l'onglet Actions
+  workflow_dispatch: # relancer à la main depuis l'onglet Actions
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Une seule publication à la fois ; on ne coupe pas celle en cours.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -27,15 +28,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
-      - run: npm ci
-      - run: npm run build
+      # Régénère le HTML depuis donnees/. Le dossier site/ est aussi
+      # versionné : même si cette étape cassait, le site publié
+      # précédemment resterait consultable dans le dépôt.
+      - run: node construire.js
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   publier:
     needs: construire
